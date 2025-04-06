@@ -13,7 +13,7 @@ def lade_jobs():
         with open(PICKLE_DATEI, "rb") as f:
             return pickle.load(f)
     else:
-        return [{"id": i, "status": "IDLE"} for i in range(1, 51)]
+        return [{"id": i, "status": "IDLE", "device": "?"} for i in range(1, 51)]
 
 st.set_page_config(page_title="Übersicht", layout="wide")
 
@@ -34,6 +34,7 @@ for i in range(MAX_JOBS):
     job = jobs[i]
     job_id = job["id"]
     status = job["status"]
+    device = job["device"]
     farbe = STATUS_INFO[status]["bg_color"]
     textfarbe = STATUS_INFO[status]["text_color"]
     status_de = STATUS_INFO[status]["label"]
@@ -49,7 +50,7 @@ for i in range(MAX_JOBS):
         color: {textfarbe};
         font-size: 24px;">
         <strong>{job_id:02d}</strong>
-        – {status_de}
+        – {device} – {status_de}
     </div>
     """
     # Verteile sie auf die 5 Spalten

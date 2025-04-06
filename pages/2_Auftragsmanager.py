@@ -12,7 +12,7 @@ def lade_jobs():
         with open(PICKLE_DATEI, "rb") as f:
             return pickle.load(f)
     else:
-        return [{"id": i, "status": "IDLE"} for i in range(1, 51)]
+        return [{"id": i, "status": "IDLE", "device": "?"} for i in range(1, 51)]
 
 
 def speichere_jobs(jobs):
@@ -44,6 +44,8 @@ else:
     for i, job in enumerate(zu_zeigende_jobs):
         job_id = job["id"]
         status = job["status"]
+        device = job["device"]
+
         farbe = STATUS_INFO[status]["bg_color"]
         textfarbe = STATUS_INFO[status]["text_color"]
         status_de = STATUS_INFO[status]["label"]
@@ -64,7 +66,11 @@ else:
         """
         col_index = i % 2
         with cols[col_index].container(border=True):
-            st.markdown(box_html, unsafe_allow_html=True)
+            colA, colB = st.columns([2, 2], vertical_alignment="center")
+            colA.markdown(box_html, unsafe_allow_html=True)
+            job["device"] = colB.text_input(
+                label="Gerät", value=device, key=f"device_{job_id}"
+            )
             col1, col2, col3, col4, col5 = st.columns(5)
 
             # Button für jeden möglichen Status
@@ -97,5 +103,6 @@ else:
 if st.sidebar.button("Alle Jobs zurücksetzen", type="primary"):
     for job in jobs:
         job["status"] = "IDLE"
+        job["device"] = "?"
     speichere_jobs(jobs)
     st.rerun()
